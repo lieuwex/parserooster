@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-const http = require('http');
-const url = require('url');
 const xlsx = require('xlsx');
 const ical = require('ical-generator');
 const uniqBy = require('lodash.uniqby');
@@ -15,14 +13,14 @@ function cap (str) {
 	return str.slice(0, 1).toUpperCase() + str.slice(1).toLowerCase();
 }
 
-if (process.argv.length < 5) {
-	console.log(`usage: <name of calendar> <source URL of schedule> <destination for ics file>`);
+if (process.argv.length !== 3) {
+	console.log('usage: <name of calendar>');
+	console.log('\tprovide the xls file into stdin');
+	console.log('\toutputs the iCal file to stdout');
 	process.exit(1);
 }
 
 const name = process.argv[2];
-const src = url.parse(process.argv[3]);
-const dest = process.argv[4];
 
 function toCal (entries) {
 	entries = entries.map(entry => ({
@@ -35,11 +33,12 @@ function toCal (entries) {
 	entries = uniqBy(entries, entry =>
 		`${entry.start.getTime()}-${entry.end.getTime()}`);
 
-	ical({
+	const res = ical({
 		name,
 		domain: 'lieuwe.xyz',
 		events: entries,
-	}).saveSync(dest);
+	}).toString();
+	console.log(res);
 }
 
 function parse (buffer) {
@@ -55,12 +54,9 @@ function parse (buffer) {
 	toCal(parsed);
 }
 
-http.get(src, res => {
-	const data = [];
-
-	res.on('data', blob => data.push(blob));
-	res.on('end', () => {
-		const buffer = Buffer.concat(data);
-		parse(buffer);
-	});
-})
+const data = [];
+process.stdin.on('data', blob => data.push(blob));
+process.stdin.on('end', () => {
+	const buffer = Buffer.concat(data);
+	parse(buffer);
+});
