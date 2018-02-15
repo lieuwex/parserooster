@@ -1,7 +1,7 @@
 parserooster
 ===
 
-Script to parse [LIACS schedules](liacs.leidenuniv.nl/edu/bachelor/roosters/).
+Script to parse [LIACS schedules](https://liacs.leidenuniv.nl/edu/bachelor/roosters/).
 
 Example usage
 ---
