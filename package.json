@@ -1,0 +1,18 @@
+{
+  "name": "parserooster",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Lieuwe Rooijakkers <lieuwerooijakkers@gmail.com> (http://www.lieuwe.xyz/)",
+  "license": "ISC",
+  "dependencies": {
+    "ical-generator": "^0.2.10",
+    "lodash.uniq": "^4.5.0",
+    "lodash.uniqby": "^4.7.0",
+    "xlsx": "^0.12.1"
+  }
+}
