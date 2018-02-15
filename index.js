@@ -10,6 +10,11 @@ function safeString (str) {
 	return str || '';
 }
 
+function cap (str) {
+	str = safeString(str);
+	return str.slice(0, 1).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 if (process.argv.length < 5) {
 	console.log(`usage: <name of calendar> <source URL of schedule> <destination for ics file>`);
 	process.exit(1);
@@ -23,7 +28,7 @@ function toCal (entries) {
 	entries = entries.map(entry => ({
 		start: new Date(`${entry[2]} ${entry[3]}`),
 		end: new Date(`${entry[2]} ${entry[4]}`),
-		location: `${safeString(entry[5])} ${safeString(entry[6])}`.trim(),
+		location: `${cap(entry[5])} ${cap(entry[6])}`.trim(),
 		summary: entry[8],
 	}));
 
