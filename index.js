@@ -3,15 +3,7 @@
 const xlsx = require('xlsx');
 const ical = require('ical-generator');
 const uniqBy = require('lodash.uniqby');
-
-function safeString (str) {
-	return str || '';
-}
-
-function cap (str) {
-	str = safeString(str);
-	return str.slice(0, 1).toUpperCase() + str.slice(1).toLowerCase();
-}
+const { cap } = require('./util.js');
 
 if (process.argv.length !== 3) {
 	console.log('usage: <name of calendar>');
@@ -33,12 +25,12 @@ function toCal (entries) {
 	entries = uniqBy(entries, entry =>
 		`${entry.start.getTime()}-${entry.end.getTime()}`);
 
-	const res = ical({
+	const cal = ical({
 		name,
 		domain: 'lieuwe.xyz',
 		events: entries,
-	}).toString();
-	console.log(res);
+	});
+	return cal.toString();
 }
 
 function parse (buffer) {
@@ -51,12 +43,13 @@ function parse (buffer) {
 	});
 
 	const parsed = res.slice(4).filter(row => row.length >= 9);
-	toCal(parsed);
+	return toCal(parsed);
 }
 
 const data = [];
 process.stdin.on('data', blob => data.push(blob));
 process.stdin.on('end', () => {
 	const buffer = Buffer.concat(data);
-	parse(buffer);
+	const str = parse(buffer);
+	console.log(str);
 });
