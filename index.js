@@ -3,7 +3,7 @@
 const xlsx = require('xlsx');
 const ical = require('ical-generator');
 const uniqBy = require('lodash.uniqby');
-const { cap } = require('./util.js');
+const { cap, validDate } = require('./util.js');
 
 if (process.argv.length !== 3) {
 	console.log('usage: <name of calendar>');
@@ -15,12 +15,14 @@ if (process.argv.length !== 3) {
 const name = process.argv[2];
 
 function toCal (entries) {
-	entries = entries.map(entry => ({
-		start: new Date(`${entry[2]} ${entry[3]}`),
-		end: new Date(`${entry[2]} ${entry[4]}`),
-		location: `${cap(entry[5])} ${cap(entry[6])}`.trim(),
-		summary: entry[8],
-	}));
+	entries = entries
+		.map(entry => ({
+			start: new Date(`${entry[2]} ${entry[3]}`),
+			end: new Date(`${entry[2]} ${entry[4]}`),
+			location: `${cap(entry[5])} ${cap(entry[6])}`.trim(),
+			summary: entry[8],
+		}))
+		.filter(({ start }) => validDate(start));
 
 	entries = uniqBy(entries, entry =>
 		`${entry.start.getTime()}-${entry.end.getTime()}`);
@@ -42,7 +44,7 @@ function parse (buffer) {
 		header: 1,
 	});
 
-	const parsed = res.slice(4).filter(row => row.length >= 9);
+	const parsed = res.filter(row => row.length >= 9);
 	return toCal(parsed);
 }
 
