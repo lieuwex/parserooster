@@ -5,24 +5,32 @@ const ical = require('ical-generator');
 const uniqBy = require('lodash.uniqby');
 const { cap, validDate } = require('./util.js');
 
-if (process.argv.length !== 3) {
-	console.log('usage: <name of calendar>');
+if (process.argv.length < 4) {
+	console.log('usage: <name of calendar> <usis IDs...>');
 	console.log('\tprovide the xls file into stdin');
 	console.log('\toutputs the iCal file to stdout');
 	process.exit(1);
 }
 
 const name = process.argv[2];
+const usisIDs = process.argv.slice(3);
 
 function toCal (entries) {
 	entries = entries
-		.map(entry => ({
-			start: new Date(`${entry[2]} ${entry[3]}`),
-			end: new Date(`${entry[2]} ${entry[4]}`),
-			location: `${cap(entry[5])} ${cap(entry[6])}`.trim(),
-			summary: entry[8],
-		}))
-		.filter(({ start }) => validDate(start));
+		.map(entry => {
+			const teacher = (entry[11] || '').trim();
+			return {
+				start: new Date(`${entry[3]} ${entry[4]}`),
+				end: new Date(`${entry[3]} ${entry[5]}`),
+				location: `${cap(entry[6])} ${cap(entry[7])}`.trim(),
+				usisID: entry[8],
+				summary: entry[9],
+				description: teacher ? `Teacher: ${entry[11]}` : '',
+			};
+		})
+		.filter(({ start, usisID }) => {
+			return usisIDs.includes(usisID) && validDate(start);
+		});
 
 	entries = uniqBy(entries, entry =>
 		`${entry.start.getTime()}-${entry.end.getTime()}`);
