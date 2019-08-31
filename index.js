@@ -6,9 +6,9 @@ const _ = require('lodash');
 const { cap, validDate } = require('./util.js');
 
 if (process.argv.length < 4) {
-	console.log('usage: <name of calendar> <usis IDs...>');
-	console.log('\tprovide the xls file into stdin');
-	console.log('\toutputs the iCal file to stdout');
+	console.error('usage: <name of calendar> <usis IDs...>');
+	console.error('\tprovide the xls file into stdin');
+	console.error('\toutputs the iCal file to stdout');
 	process.exit(1);
 }
 
