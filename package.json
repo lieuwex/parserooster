@@ -10,8 +10,8 @@
   "author": "Lieuwe Rooijakkers <lieuwerooijakkers@gmail.com> (http://www.lieuwe.xyz/)",
   "license": "ISC",
   "dependencies": {
-    "ical-generator": "^0.2.10",
+    "ical-generator": "^1.7.2",
     "lodash": "^4.17.15",
-    "xlsx": "^0.12.1"
+    "xlsx": "^0.15.1"
   }
 }

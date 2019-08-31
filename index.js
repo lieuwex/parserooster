@@ -59,6 +59,7 @@ function parse (buffer) {
 	const sheet = workbook.Sheets[workbook.SheetNames[0]]
 	const res = xlsx.utils.sheet_to_json(sheet, {
 		header: 1,
+		raw: false,
 	});
 
 	const parsed = res.filter(row => row.length >= 9);
