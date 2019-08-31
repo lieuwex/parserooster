@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "ical-generator": "^0.2.10",
-    "lodash.uniqby": "^4.7.0",
+    "lodash": "^4.17.15",
     "xlsx": "^0.12.1"
   }
 }

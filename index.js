@@ -2,7 +2,7 @@
 
 const xlsx = require('xlsx');
 const ical = require('ical-generator');
-const uniqBy = require('lodash.uniqby');
+const _ = require('lodash');
 const { cap, validDate } = require('./util.js');
 
 if (process.argv.length < 4) {
@@ -16,7 +16,7 @@ const name = process.argv[2];
 const usisIDs = process.argv.slice(3);
 
 function toCal (entries) {
-	entries = entries
+	entries = _.chain(entries)
 		.map(entry => {
 			const teacher = (entry[11] || '').trim();
 			return {
@@ -30,10 +30,19 @@ function toCal (entries) {
 		})
 		.filter(({ start, usisID }) => {
 			return usisIDs.includes(usisID) && validDate(start);
-		});
-
-	entries = uniqBy(entries, entry =>
-		`${entry.start.getTime()}-${entry.end.getTime()}`);
+		})
+		.groupBy(entry =>
+			`${entry.usisID},${entry.start.getTime()},${entry.end.getTime()}`
+		)
+		.mapValues(values => {
+			const obj = values[0];
+			for (const val of values.slice(1)) {
+				obj.location += `, ${val.location}`;
+			}
+			return obj;
+		})
+		.values()
+		.value();
 
 	const cal = ical({
 		name,
