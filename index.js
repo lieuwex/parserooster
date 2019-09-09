@@ -28,9 +28,9 @@ function toCal (entries) {
 				description: teacher ? `Teacher: ${entry[11]}` : '',
 			};
 		})
-		.filter(({ start, usisID }) => {
-			return usisIDs.includes(usisID) && validDate(start);
-		})
+		.filter(({ start, usisID }) =>
+			usisID && usisIDs.some(id => usisID.startsWith(id)) && validDate(start)
+		)
 		.groupBy(entry =>
 			`${entry.usisID},${entry.start.getTime()},${entry.end.getTime()}`
 		)
